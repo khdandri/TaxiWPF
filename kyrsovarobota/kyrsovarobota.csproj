@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="Model\Orders.cs" />
     <Compile Include="Model\User.cs" />
+    <Compile Include="Services\DriverService.cs" />
     <Compile Include="Services\OrderManager.cs" />
     <Compile Include="Services\RouteService.cs" />
     <Compile Include="Services\UserManager.cs" />

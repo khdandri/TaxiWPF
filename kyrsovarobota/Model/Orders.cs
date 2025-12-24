@@ -12,9 +12,11 @@ namespace kyrsovarobota.Model
         public string ClientName { get; set; }
         public string FromAddress { get; set; }
         public string ToAddress { get; set; }
-        public double Distance { get; set; } // Кількість км
+        public double Distance { get; set; }
         public decimal TotalPrice { get; set; }
         public string Status { get; set; }
+        public string DriverName { get; set; } // Нове поле
+        public DateTime CreatedAt { get; set; } // Нове поле
 
         public Orders() { } // Конструктор за замовчуванням
     }

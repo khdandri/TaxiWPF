@@ -1,10 +1,11 @@
 ﻿using kyrsovarobota;
+using kyrsovarobota.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using kyrsovarobota.Model;
+using System.Text.RegularExpressions;
 
 namespace kyrsovarobota
 {
@@ -57,10 +58,19 @@ namespace kyrsovarobota
                 errorMessage = "Логін має бути не менше 5 символів.";
                 return false;
             }
+            if (!Regex.IsMatch(username, @"^[a-zA-Z0-9._]+$")) 
+            {
+                errorMessage = "Логін може містити тілки латинські літери, цифри, точку та нижнє підкреслення ";
+                return false;
+            }
+            if (Regex.IsMatch(username, @"^[._]+$")) 
+            {
+                errorMessage = "Логін не може складатися тільки з символів";
+                return false;
+            }
 
-
-            // 2. Перевірка пароля 
-            if (string.IsNullOrWhiteSpace(password) || password.Length < 6)
+                // 2. Перевірка пароля 
+                if (string.IsNullOrWhiteSpace(password) || password.Length < 6)
             {
                 errorMessage = "Пароль має бути не менше 6 символів.";
                 return false;

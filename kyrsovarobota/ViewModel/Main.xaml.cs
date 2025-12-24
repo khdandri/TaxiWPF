@@ -1,4 +1,6 @@
-﻿using System;
+﻿using kyrsovarobota.Model;
+using kyrsovarobota.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace kyrsovarobota.View
 {
@@ -20,95 +23,167 @@ namespace kyrsovarobota.View
     public partial class Main : Window
     {
         private OrderManager _orderManager = new OrderManager();
+        private List<Orders> _sessionHistory = new List<Orders>(); // Тимчасова історія
+        private DispatcherTimer _expirationTimer;
         private const decimal RatePerKm = 15.0m;
         private const decimal BasePrice = 40.0m;
 
         public Main()
         {
             InitializeComponent();
-
-            // Заповнюємо ComboBox вулицями
             FromComboBox.ItemsSource = RouteService.Streets;
             ToComboBox.ItemsSource = RouteService.Streets;
+            CarClassComboBox.ItemsSource = DriverService.CarsClasses;
+
+            // Таймер для перевірки 5-хвилинного ліміту
+            _expirationTimer = new DispatcherTimer();
+            _expirationTimer.Interval = TimeSpan.FromSeconds(30);
+            _expirationTimer.Tick += (s, e) => CheckOrdersTime();
+            _expirationTimer.Start();
 
             LoadOrders();
         }
 
-        private void Route_Changed(object sender, SelectionChangedEventArgs e)
+        private void CheckOrdersTime()
         {
-            if (FromComboBox.SelectedItem == null || ToComboBox.SelectedItem == null) return;
+            var now = DateTime.Now;
+            var orders = _orderManager.GetAll().ToList();
+            bool changed = false;
 
-            string from = FromComboBox.SelectedItem.ToString();
-            string to = ToComboBox.SelectedItem.ToString();
-
-            if (from == to)
+            foreach (var order in orders.Where(o => o.Status == "Нове"))
             {
-                MessageBox.Show("Не можливо подорожувати по одній вулиці!!");
-                ToComboBox.SelectedIndex = -1;
-                return;
+                if ((now - order.CreatedAt).TotalMinutes >= 2)
+                {
+                    order.Status = "Скасовано";
+                    changed = true;
+                    // Запускаємо видалення через 1 хв
+                    ScheduleAutoDeletion(order);
+                }
             }
 
-            double dist = RouteService.GetDistance(from, to);
-            DistanceInput.Text = dist.ToString("F1"); // Показуємо 1 знак після коми
-
-            decimal total = BasePrice + (decimal)dist * RatePerKm;
-            PriceInput.Text = total.ToString("F2");
+            if (changed) { _orderManager.Save(); LoadOrders(); }
         }
 
-        private void LoadOrders()
+        // ПУНКТ 1 ТА 2: Розрахунок ціни залежно від класу
+        private void UpdatePrice()
         {
-            OrdersGrid.ItemsSource = null;
-            OrdersGrid.ItemsSource = _orderManager.GetAll(); 
+            if (FromComboBox.SelectedItem == null || ToComboBox.SelectedItem == null || CarClassComboBox.SelectedItem == null) return;
+
+            double dist = RouteService.GetDistance(FromComboBox.SelectedItem.ToString(), ToComboBox.SelectedItem.ToString());
+            DistanceInput.Text = dist.ToString("F1");
+
+            decimal price = BasePrice + (decimal)dist * RatePerKm;
+            string carClass = CarClassComboBox.SelectedItem.ToString();
+
+            // Логіка коефіцієнтів
+            switch (carClass)
+            {
+                case "Economy": price /= 2.0m; break;
+                case "Standard": price /= 1.5m; break;
+                case "Business": break; // Без змін
+                case "Premium": price *= 1.5m; break;
+            }
+
+            PriceInput.Text = price.ToString("F2");
         }
 
-
+        private void Route_Changed(object sender, SelectionChangedEventArgs e) => UpdatePrice();
+        private void CarsClass_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            UpdatePrice();
+            if (CarClassComboBox.SelectedItem != null)
+            {
+                string cls = CarClassComboBox.SelectedItem.ToString();
+                DriverComboBox.ItemsSource = DriverService.drivers.Where(d => d.CarClass == cls).Select(d => d.Name).ToList();
+            }
+        }
 
         private void AddOrder_Click(object sender, RoutedEventArgs e)
         {
-            if (FromComboBox.SelectedItem == null || ToComboBox.SelectedItem == null || string.IsNullOrWhiteSpace(ClientNameInput.Text))
+            if (string.IsNullOrWhiteSpace(ClientNameInput.Text) || CarClassComboBox.SelectedItem == null)
             {
-                MessageBox.Show("Заповніть всі поля!");
+                MessageBox.Show("Заповніть всі дані клієнта та клас авто!");
                 return;
             }
 
-            var newOrder = new Orders
+            var order = new Orders
             {
                 ClientName = ClientNameInput.Text,
                 FromAddress = FromComboBox.SelectedItem.ToString(),
                 ToAddress = ToComboBox.SelectedItem.ToString(),
                 Distance = double.Parse(DistanceInput.Text),
                 TotalPrice = decimal.Parse(PriceInput.Text),
-                Status = "Нове"
+                Status = "Нове",
+                CreatedAt = DateTime.Now,
+                DriverName = "Не призначено"
             };
 
-            _orderManager.AddOrder(newOrder);
+            MessageBox.Show("Замовлення успішно додано, додайте водія");
+            _orderManager.AddOrder(order);
             LoadOrders();
             ClearInputs();
-            MessageBox.Show("Замовлення успішно додано!");
         }
 
+        private void AssignDriver_Click(object sender, RoutedEventArgs e)
+        {
+            if (OrdersGrid.SelectedItem is Orders selected && DriverComboBox.SelectedItem != null)
+            {
+                if (selected.Status != "Нове") return;
+
+                selected.DriverName = DriverComboBox.SelectedItem.ToString();
+                selected.Status = "Виконано";
+                _orderManager.Save();
+                LoadOrders();
+
+                // ПУНКТ 3: Видалення через хвилину
+                ScheduleAutoDeletion(selected);
+            }
+        }
+
+        private async void ScheduleAutoDeletion(Orders order)
+        {
+            await Task.Delay(60000); // Чекаємо 1 хвилину
+
+            // Переносимо в історію
+            _sessionHistory.Add(order);
+            HistoryListBox.ItemsSource = null;
+            HistoryListBox.ItemsSource = _sessionHistory;
+
+            // Видаляємо з основної бази
+            _orderManager.GetAll().Remove(order);
+            _orderManager.Save();
+
+            Dispatcher.Invoke(() => LoadOrders());
+        }
+
+        // ЕЛЕМЕНТ ІНТЕРФЕЙСУ ДЛЯ ІСТОРІЇ
+        private void ShowHistory_Click(object sender, RoutedEventArgs e) 
+        {
+            HistoryPanel.Visibility = Visibility.Visible; 
+        }
+        private void CloseHistory_Click(object sender, RoutedEventArgs e)
+        {
+            HistoryPanel.Visibility = Visibility.Collapsed;
+        }
+
+        private void LoadOrders()
+        {
+            OrdersGrid.ItemsSource = null; OrdersGrid.ItemsSource = _orderManager.GetAll(); 
+        }
         private void ClearInputs()
         {
-            ClientNameInput.Clear();
-            FromComboBox.SelectedIndex = -1;
-            ToComboBox.SelectedIndex = -1;
-            DistanceInput.Clear();
-            PriceInput.Clear();
+            ClientNameInput.Clear(); PriceInput.Clear(); DistanceInput.Clear(); 
         }
 
-        
-        private void DeleteOrder_Click(object sender, RoutedEventArgs e) 
+        private void DeleteOrder_Click(object sender, RoutedEventArgs e)
         {
-            if (OrdersGrid.SelectedItem is Orders selected) 
-            { _orderManager.GetAll().Remove(selected); _orderManager.Save(); LoadOrders(); }
-            MessageBox.Show("Замовлення успішно видалено з бази данних!");
+            if (OrdersGrid.SelectedItem is Orders s) { _orderManager.GetAll().Remove(s); _orderManager.Save(); LoadOrders(); }
+            MessageBox.Show("Замовлення успішно видалено.");
         }
 
-        private void Logout_Click(object sender, RoutedEventArgs e)
+        private void Logout_Click(object sender, RoutedEventArgs e) 
         {
-             Registration loginWindow = new Registration(); 
-             loginWindow.Show();
-            this.Close();
+            new Registration().Show(); this.Close(); 
         }
     }
 }
