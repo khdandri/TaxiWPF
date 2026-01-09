@@ -67,14 +67,14 @@ namespace kyrsovarobota.View
 
                 if (authenticatedUser != null)
                 {
-                    MessageBox.Show($"Ласкаво просимо, {authenticatedUser.Username}!", "Успішна авторизація", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show($"Welcome, {authenticatedUser.Username}!", "Succesful authorization", MessageBoxButton.OK, MessageBoxImage.Information);
                     Main mainWindow = new Main();
                     mainWindow.Show();
                     this.Close();
                 }
                 else
                 {
-                    MessageBox.Show(errorMessage, "Помилка авторизації", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show(errorMessage, "Autorization Error!", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
 

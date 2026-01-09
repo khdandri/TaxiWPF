@@ -20,12 +20,12 @@
                     <GradientStop Color="#FFF0F10A" Offset="0.593"/>
                 </LinearGradientBrush>
             </Canvas.OpacityMask>
-            <Label Content="ВХІД ДО АККАУНТУ" FontFamily="Times New Roman" FontSize="35" Foreground="White" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Black"  Height="128" Width="448" Canvas.Left="101" VerticalAlignment="Center"/>
+            <Label Content="LOGIN INTO ACCOUNT" FontFamily="Times New Roman" FontSize="35" Foreground="White" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Black"  Height="128" Width="448" Canvas.Left="101" VerticalAlignment="Center"/>
             <TextBox HorizontalAlignment="Left" x:Name="Username_login" FontSize="18" TextWrapping="Wrap" Foreground="Black" Background="WhiteSmoke" Text="" VerticalAlignment="Center" Width="378" Height="38" Canvas.Left="136" Canvas.Top="242"/>
-            <Label Content="ЛОГІН" FontFamily="Times New Roman" FontSize="18" Foreground="Black" HorizontalAlignment="Left" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Height="30" VerticalAlignment="Center" Width="163" Canvas.Left="136" Canvas.Top="207"/>
-            <Label Content="ПАРОЛЬ" FontFamily="Times New Roman" FontSize="18" Foreground="Black" HorizontalAlignment="Left" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Height="30" VerticalAlignment="Center" Width="163" Canvas.Left="136" Canvas.Top="302"/>
-            <Button Content="ВХІД" FontFamily="Times New Roman" x:Name="login" Foreground="Black" Background="Yellow" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center" Height="48" Width="378" Click="Login_Click" Canvas.Left="136" Canvas.Top="437"/>
-            <Button Content="РЕЄСТРАЦІЯ" FontSize="20" FontFamily="Times New Roman" x:Name="register" Background="Yellow" HorizontalAlignment="Center" VerticalAlignment="Top" Width="164" Height="38" Click="Button_Click" Canvas.Left="243" Canvas.Top="545"/>
+            <Label Content="LOGIN" FontFamily="Times New Roman" FontSize="18" Foreground="Black" HorizontalAlignment="Left" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Height="30" VerticalAlignment="Center" Width="163" Canvas.Left="136" Canvas.Top="207"/>
+            <Label Content="PASSWORD" FontFamily="Times New Roman" FontSize="18" Foreground="Black" HorizontalAlignment="Left" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Height="30" VerticalAlignment="Center" Width="163" Canvas.Left="136" Canvas.Top="302"/>
+            <Button Content="LOGIN" FontFamily="Times New Roman" x:Name="login" Foreground="Black" Background="Yellow" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Center" Height="48" Width="378" Click="Login_Click" Canvas.Left="136" Canvas.Top="437"/>
+            <Button Content="REGISTRATION" FontSize="20" FontFamily="Times New Roman" x:Name="register" Background="Yellow" HorizontalAlignment="Center" VerticalAlignment="Top" Width="164" Height="38" Click="Button_Click" Canvas.Left="243" Canvas.Top="545"/>
             <PasswordBox x:Name="Password_login" 
              FontSize="18" Foreground="Black" Background="WhiteSmoke" 
              Width="378" Height="38" 

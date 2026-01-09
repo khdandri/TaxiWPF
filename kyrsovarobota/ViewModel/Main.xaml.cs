@@ -50,11 +50,11 @@ namespace kyrsovarobota.View
             var orders = _orderManager.GetAll().ToList();
             bool changed = false;
 
-            foreach (var order in orders.Where(o => o.Status == "Нове"))
+            foreach (var order in orders.Where(o => o.Status == "New"))
             {
-                if ((now - order.CreatedAt).TotalMinutes >= 2)
+                if ((now - order.CreatedAt).TotalMinutes >= 1)
                 {
-                    order.Status = "Скасовано";
+                    order.Status = "Cancelled";
                     changed = true;
                     // Запускаємо видалення через 1 хв
                     ScheduleAutoDeletion(order);
@@ -102,7 +102,7 @@ namespace kyrsovarobota.View
         {
             if (string.IsNullOrWhiteSpace(ClientNameInput.Text) || CarClassComboBox.SelectedItem == null)
             {
-                MessageBox.Show("Заповніть всі дані клієнта та клас авто!");
+                MessageBox.Show( "Fill in all customers data and car classes!");
                 return;
             }
 
@@ -113,12 +113,12 @@ namespace kyrsovarobota.View
                 ToAddress = ToComboBox.SelectedItem.ToString(),
                 Distance = double.Parse(DistanceInput.Text),
                 TotalPrice = decimal.Parse(PriceInput.Text),
-                Status = "Нове",
+                Status = "New",
                 CreatedAt = DateTime.Now,
-                DriverName = "Не призначено"
+                DriverName = "Not assigned"
             };
 
-            MessageBox.Show("Замовлення успішно додано, додайте водія");
+            MessageBox.Show("Order add succesfuly, add driver");
             _orderManager.AddOrder(order);
             LoadOrders();
             ClearInputs();
@@ -128,10 +128,10 @@ namespace kyrsovarobota.View
         {
             if (OrdersGrid.SelectedItem is Orders selected && DriverComboBox.SelectedItem != null)
             {
-                if (selected.Status != "Нове") return;
+                if (selected.Status != "New") return;
 
                 selected.DriverName = DriverComboBox.SelectedItem.ToString();
-                selected.Status = "Виконано";
+                selected.Status = "Done";
                 _orderManager.Save();
                 LoadOrders();
 
@@ -178,7 +178,7 @@ namespace kyrsovarobota.View
         private void DeleteOrder_Click(object sender, RoutedEventArgs e)
         {
             if (OrdersGrid.SelectedItem is Orders s) { _orderManager.GetAll().Remove(s); _orderManager.Save(); LoadOrders(); }
-            MessageBox.Show("Замовлення успішно видалено.");
+            MessageBox.Show("Order succesfuly deleted.");
         }
 
         private void Logout_Click(object sender, RoutedEventArgs e) 

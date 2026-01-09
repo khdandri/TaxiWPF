@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Taxi Management System" Height="680" Width="1150" WindowStartupLocation="CenterScreen">
     <Grid>
-        <Canvas x:Name="MainCanvas">
+        <Canvas x:Name="MainCanvas" ClipToBounds="True">
             <Canvas.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFF0F10A" Offset="0.06"/>
@@ -11,35 +11,35 @@
                 </LinearGradientBrush>
             </Canvas.Background>
 
-            <Label Content="Облік замовлень таксі" FontFamily="Times New Roman" FontSize="30" Foreground="White" 
+            <Label Content="Accounting of taxi orders" FontFamily="Times New Roman" FontSize="30" Foreground="White" 
                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="Black" 
                    Height="60" Width="500" Canvas.Left="200" Canvas.Top="10"/>
 
             <Border Background="WhiteSmoke" CornerRadius="10" Canvas.Left="15" Canvas.Top="80" Width="260" Height="385" Opacity="0.95">
                 <StackPanel Margin="10">
-                    <TextBlock Text="Замовлення клієнта" FontSize="18" FontWeight="Bold" Margin="0,0,0,5" HorizontalAlignment="Center" FontFamily="Times New Roman"/>
-                    <Label Content="Ім'я клієнта"/>
+                    <TextBlock Text="Client`s order" FontSize="18" FontWeight="Bold" Margin="0,0,0,5" HorizontalAlignment="Center" FontFamily="Times New Roman"/>
+                    <Label Content="Client`s name"/>
                     <TextBox x:Name="ClientNameInput" Height="25"/>
-                    <Label Content="Звідки"/>
+                    <Label Content="From"/>
                     <ComboBox x:Name="FromComboBox" Height="25" SelectionChanged="Route_Changed"/>
-                    <Label Content="Куди"/>
+                    <Label Content="To"/>
                     <ComboBox x:Name="ToComboBox" Height="25" SelectionChanged="Route_Changed"/>
-                    <Label Content="Клас автомобіля"/>
+                    <Label Content="Car class"/>
                     <ComboBox x:Name="CarClassComboBox" Height="25" SelectionChanged="CarsClass_Changed"/>
-                    <Label Content="Відстань (км)"/>
+                    <Label Content="Distance (km)"/>
                     <TextBox x:Name="DistanceInput" Height="25" IsReadOnly="True" Background="#EEE"/>
-                    <Label Content="Ціна до сплати (грн)" FontWeight="Bold"/>
+                    <Label Content="Price (uah)" FontWeight="Bold"/>
                     <TextBox x:Name="PriceInput" Height="25" IsReadOnly="True" Background="#FFFFE0" FontWeight="Bold"/>
-                    <Button Content="ДОДАТИ В БАЗУ" Click="AddOrder_Click" Height="22" Background="Yellow" FontWeight="Bold" Margin="0,10,0,0"/>
+                    <Button Content="Add to base" Click="AddOrder_Click" Height="22" Background="Yellow" FontWeight="Bold" Margin="0,10,0,0"/>
                 </StackPanel>
             </Border>
 
             <Border Background="WhiteSmoke" CornerRadius="10" Canvas.Left="15" Canvas.Top="475" Width="260" Height="130" Opacity="0.95" BorderBrush="Gold" BorderThickness="2">
                 <StackPanel Margin="10">
-                    <TextBlock Text="Вибір водія" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" FontFamily="Times New Roman"/>
-                    <Label Content="Оберіть водія"/>
+                    <TextBlock Text="Driver`s choice" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" FontFamily="Times New Roman"/>
+                    <Label Content="Choose river"/>
                     <ComboBox x:Name="DriverComboBox" Height="25"/>
-                    <Button Content="ПІДТВЕРДИТИ" Click="AssignDriver_Click" Height="23" Background="LightGreen" FontWeight="Bold" Margin="0,10,0,0"/>
+                    <Button Content="ACCEPT" Click="AssignDriver_Click" Height="23" Background="LightGreen" FontWeight="Bold" Margin="0,10,0,0"/>
                 </StackPanel>
             </Border>
 
@@ -47,8 +47,8 @@
                       AutoGenerateColumns="False" IsReadOnly="True" Background="WhiteSmoke" Opacity="0.95">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="35"/>
-                    <DataGridTextColumn Header="Клієнт" Binding="{Binding ClientName}" Width="100"/>
-                    <DataGridTextColumn Header="Маршрут" Width="140">
+                    <DataGridTextColumn Header="Client" Binding="{Binding ClientName}" Width="100"/>
+                    <DataGridTextColumn Header="Route" Width="140">
                         <DataGridTextColumn.Binding>
                             <MultiBinding StringFormat="{}{0} - {1}">
                                 <Binding Path="FromAddress" />
@@ -56,18 +56,45 @@
                             </MultiBinding>
                         </DataGridTextColumn.Binding>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Водій" Binding="{Binding DriverName}" Width="100"/>
-                    <DataGridTextColumn Header="Ціна" Binding="{Binding TotalPrice}" Width="60"/>
-                    <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="85"/>
-                    <DataGridTextColumn Header="Час" Binding="{Binding CreatedAt, StringFormat={}{0:HH:mm:ss}}" Width="60"/>
+                    <DataGridTextColumn Header="Driver" Binding="{Binding DriverName}" Width="100"/>
+                    <DataGridTextColumn Header="Price" Binding="{Binding TotalPrice}" Width="60"/>
+                    <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="85"/>
+                    <DataGridTextColumn Header="Time" Binding="{Binding CreatedAt, StringFormat={}{0:HH:mm:ss}}" Width="60"/>
                 </DataGrid.Columns>
             </DataGrid>
 
             <Border x:Name="HistoryPanel" Visibility="Collapsed" Background="#333" CornerRadius="10" Canvas.Left="885" Canvas.Top="80" Width="240" Height="465" Opacity="0.95">
                 <Grid>
                     <StackPanel Margin="10">
-                        <TextBlock Text="Історія (поточна сесія)" Foreground="White" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                        <ListBox x:Name="HistoryListBox" Height="380" Background="Transparent" Foreground="White" BorderThickness="0">
+						<TextBlock Text="Orders history (current session)" Foreground="White" FontSize="13" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,10">
+							<TextBlock.RenderTransform>
+									<TranslateTransform x:Name="TextTransform" X="80" />
+								</TextBlock.RenderTransform>
+
+								<TextBlock.Style>
+									<Style TargetType="TextBlock">
+										<Style.Triggers>
+											<DataTrigger Binding="{Binding Visibility, ElementName=HistoryPanel}" Value="Visible">
+												<DataTrigger.EnterActions>
+													<BeginStoryboard Name="MarqueeStoryboard">
+														<Storyboard>
+															<DoubleAnimation
+																Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+																From="20" To="-15"
+																Duration="0:0:8"
+																RepeatBehavior="Forever" />
+														</Storyboard>
+													</BeginStoryboard>
+												</DataTrigger.EnterActions>
+												<DataTrigger.ExitActions>
+													<StopStoryboard BeginStoryboardName="MarqueeStoryboard" />
+												</DataTrigger.ExitActions>
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</TextBlock.Style>
+						</TextBlock>
+						<ListBox x:Name="HistoryListBox" Height="380" Background="Transparent" Foreground="White" BorderThickness="0">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Margin="0,5">
@@ -79,14 +106,14 @@
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
-                        <Button Content="ЗАКРИТИ" Click="CloseHistory_Click" Background="DarkRed" Foreground="White" Height="25" Margin="0,5,0,0"/>
+                        <Button Content="CLOSE" Click="CloseHistory_Click" Background="DarkRed" Foreground="White" Height="25" Margin="0,5,0,0"/>
                     </StackPanel>
                 </Grid>
             </Border>
 
-            <Button Content="ВИДАЛИТИ ЗАПИС" Click="DeleteOrder_Click" Canvas.Left="290" Canvas.Top="555" Width="150" Height="35" Background="#FF3E3E" Foreground="White"/>
-            <Button Content="ІСТОРІЯ" Click="ShowHistory_Click" Canvas.Left="450" Canvas.Top="555" Width="150" Height="35" Background="Gray" Foreground="White"/>
-            <Button Content="ВИЙТИ" Click="Logout_Click" Canvas.Left="725" Canvas.Top="555" Width="150" Height="35" Background="Black" Foreground="White"/>
+            <Button Content="DELETE ENTRY" Click="DeleteOrder_Click" Canvas.Left="290" Canvas.Top="555" Width="150" Height="35" Background="#FF3E3E" Foreground="White"/>
+            <Button Content="HISTORY" Click="ShowHistory_Click" Canvas.Left="450" Canvas.Top="555" Width="150" Height="35" Background="Gray" Foreground="White"/>
+            <Button Content="LEAVE" Click="Logout_Click" Canvas.Left="725" Canvas.Top="555" Width="150" Height="35" Background="Black" Foreground="White"/>
         </Canvas>
     </Grid>
 </Window>

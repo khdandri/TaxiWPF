@@ -37,7 +37,7 @@ namespace kyrsovarobota.View
 
                 if (password != confirmPassword)
                 {
-                    MessageBox.Show("Паролі не співпадають!", "Помилка реєстрації", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Password don`t match!", "Registration Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -46,12 +46,12 @@ namespace kyrsovarobota.View
 
                 if (success)
                 {
-                    MessageBox.Show("Реєстрація успішна! Тепер ви можете увійти.", "Успіх", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Registration is correct! Now you can log in.", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
                     OpenLoginWindow();
                 }
                 else
                 {
-                    MessageBox.Show(errorMessage, "Помилка реєстрації", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show(errorMessage, "Registration Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
 

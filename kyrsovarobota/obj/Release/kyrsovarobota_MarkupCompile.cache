@@ -4,11 +4,11 @@
 winexe
 C#
 .cs
-D:\taxiwpf\TaxiWPF\kyrsovarobota\obj\Debug\
+D:\taxiwpf\TaxiWPF\kyrsovarobota\obj\Release\
 kyrsovarobota
 none
 false
-DEBUG;TRACE
+TRACE
 D:\taxiwpf\TaxiWPF\kyrsovarobota\View\App.xaml
 41458331794
 
@@ -16,5 +16,5 @@ D:\taxiwpf\TaxiWPF\kyrsovarobota\View\App.xaml
 23-1683116852
 View\Login.xaml;View\Main.xaml;View\MainWindow.xaml;View\Registration.xaml;
 
-False
+True
 

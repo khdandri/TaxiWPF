@@ -26,11 +26,11 @@
                 </LinearGradientBrush>
             </Canvas.OpacityMask>
             <Label Canvas.Left="157" Canvas.Top="10" HorizontalAlignment="Center" VerticalAlignment="Top" Width="336" Height="78">
-                <Label Content="Зареєструйтесь у нашому додатку" Background="Yellow" Foreground="Black" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Times New Roman" Height="78" Width="326"/>
+                <Label Content="Register in our app" Background="Yellow" Foreground="Black" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Times New Roman" Height="78" Width="326"/>
             </Label>
-            <Button Content="РЕЄСТРАЦІЯ" Click="registration" Background="Yellow" Foreground="Black" FontSize="20" FontFamily="Times New Roman" Canvas.Left="190" Canvas.Top="117" Height="100" Width="258" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-            <Label Content="Або увійдіть, якщо вже маєте аккаунт" Background="Yellow" Foreground="Black" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Times New Roman" Height="78" Width="376" Canvas.Left="131" Canvas.Top="256" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-            <Button Content="ВХІД" Background="Yellow" Click="login" Foreground="Black" FontSize="20" FontFamily="Times New Roman" Canvas.Left="190" Canvas.Top="392" Height="100" Width="258" HorizontalAlignment="Center" VerticalAlignment="Top" OpacityMask="Black"/>
+            <Button Content="REGISTRATION" Click="registration" Background="Yellow" Foreground="Black" FontSize="20" FontFamily="Times New Roman" Canvas.Left="190" Canvas.Top="117" Height="100" Width="258" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+            <Label Content="Or login, if you already have an account" Background="Yellow" Foreground="Black" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Times New Roman" Height="78" Width="376" Canvas.Left="131" Canvas.Top="256" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+            <Button Content="LOGIN" Background="Yellow" Click="login" Foreground="Black" FontSize="20" FontFamily="Times New Roman" Canvas.Left="190" Canvas.Top="392" Height="100" Width="258" HorizontalAlignment="Center" VerticalAlignment="Top" OpacityMask="Black"/>
             <Button   Click="Exit" Canvas.Left="264" Canvas.Top="518" HorizontalAlignment="Center" Height="79" VerticalAlignment="Top" Width="122" RenderTransformOrigin="0.5,0.5">
                 <Image VerticalAlignment="Center" HorizontalAlignment="Center" Height="153" Source="/Images/exit.png" Stretch="Fill" Width="121"/>
 
